@@ -1,25 +1,13 @@
 import React, { useState } from "react";
 
-function Manager({ data, setData }) {
+function Manager({ data, handleDelete, handleAdd }) {
   const [text, setText] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formdata = new FormData();
-    formdata.append("task", text);
-    for (let [key, value] of formdata.entries()) {
-      console.log(key, value);
-    }
-
-    const res = await fetch("http://localhost:3000/tasks", {
-      method: "POST",
-      //   //   headers: { "Content-Type": "application/json" },
-      //   //   body: JSON.stringify({ task: text }),
-      body: formdata,
-    });
-    const newTask = await res.json();
-    setData((prev) => [...prev, newTask]);
+    await handleAdd(text);
     setText("");
   };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -34,9 +22,18 @@ function Manager({ data, setData }) {
         </label>
         <button type="submit">Add Task</button>
       </form>
-      {data.map((t) => (
-        <div key={t._id}>{t.task}</div>
-      ))}
+      <main>
+        {data.map((t) => (
+          <div key={t._id} className="single_task">
+            <label htmlFor="checked_task">
+              <input type="checkbox" name="checked_task" id="checked_task" />
+              <p>{t.task}</p>
+            </label>
+            <button onClick={() => handleEdit(t._id)}>Edit</button>
+            <button onClick={() => handleDelete(t._id)}>Delete</button>
+          </div>
+        ))}
+      </main>
     </div>
   );
 }

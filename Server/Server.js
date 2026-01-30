@@ -48,9 +48,19 @@ app.get("/tasks", async (req, res) => {
 
 app.post("/tasks", upload.none(), async (req, res) => {
   try {
-    const { task } = await req.body;
+    const { task } = req.body;
     const t = await Tasks.create({ task: task });
-    res.status(201).json({ success: true, message: "User Created" });
+    res.status(201).json(t);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.delete("/tasks/:id", async (req, res) => {
+  console.log(req.params.id);
+  try {
+    const task = await Tasks.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Task Deleted" });
   } catch (error) {
     console.log(error);
   }
